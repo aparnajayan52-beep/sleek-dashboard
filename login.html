@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLEEK</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+
+body{
+  height:100vh;
+  background:linear-gradient(120deg,#05010d,#2b1055,#05010d);
+  background-size:300% 300%;
+  animation:bgMove 18s ease infinite;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+  overflow:hidden;
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* PARTICLES */
+.shape{
+  position:absolute;
+  border:1px solid rgba(200,140,255,0.25);
+  animation:float 30s linear infinite;
+}
+.shape.circle{border-radius:50%;}
+@keyframes float{
+  0%{
+    transform:translateY(110vh) rotate(0deg);
+    opacity:0;
+  }
+  20%{opacity:1;}
+  80%{opacity:1;}
+  100%{
+    transform:translateY(-120vh) rotate(360deg);
+    opacity:0;
+  }
+}
+
+
+/* CARD */
+.card{
+  width:360px;
+  padding:35px;
+  border-radius:18px;
+  background:rgba(20,10,35,0.78);
+  backdrop-filter:blur(25px);
+  box-shadow:0 0 40px rgba(157,78,221,0.35);
+  z-index:2;
+  animation:fadeIn 1.2s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+
+/* LOGO */
+.logo{text-align:center;margin-bottom:25px;}
+.logo-icon{
+  width:46px;height:46px;
+  background:linear-gradient(135deg,#c77dff,#7b2cbf);
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 0 25px rgba(199,125,255,0.8);
+  margin:auto;
+}
+.logo h1{
+  margin-top:12px;
+  letter-spacing:3px;
+  color:#e0aaff;
+}
+
+/* INPUTS */
+.field{margin-bottom:16px;}
+.field label{font-size:12px;opacity:.7;}
+
+.input{
+  display:flex;
+  align-items:center;
+  background:rgba(255,255,255,0.07);
+  border-radius:14px;
+  padding:13px;
+  margin-top:6px;
+}
+
+.input input{
+  background:none;border:none;outline:none;
+  color:#fff;width:100%;margin-left:8px;
+}
+
+.eye{cursor:pointer;opacity:.7;}
+
+.forgot{
+  text-align:right;
+  font-size:12px;
+  margin-bottom:20px;
+  color:#c77dff;
+  cursor:pointer;
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(90deg,#9d4edd,#5a189a);
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+  box-shadow:0 10px 30px rgba(157,78,221,0.5);
+}
+
+/* LOADER */
+.loader{
+  display:none;
+  width:22px;height:22px;
+  border:3px solid rgba(255,255,255,.3);
+  border-top:3px solid #c77dff;
+  border-radius:50%;
+  animation:spin 1s linear infinite;
+  margin:15px auto 0;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* WELCOME LOGO ANIMATION */
+.welcome-logo{
+  animation:logoIntro 1.6s ease;
+}
+@keyframes logoIntro{
+  0%{transform:scale(0);opacity:0;}
+  60%{transform:scale(1.25);opacity:1;}
+  100%{transform:scale(1);}
+}
+
+/* HIDE */
+.hidden{display:none;}
+</style>
+</head>
+
+<body>
+
+<script>
+for(let i=0;i<22;i++){
+  let s=document.createElement("div");
+  s.className="shape "+(Math.random()>0.5?"circle":"");
+  s.style.width=s.style.height=Math.random()*10+6+"px";
+  s.style.left=Math.random()*100+"%";
+  s.style.animationDuration=Math.random()*15+10+"s";
+  document.body.appendChild(s);
+}
+</script>
+
+<!-- LOGIN -->
+<div class="card" id="login">
+  <div class="logo">
+    <div class="logo-icon">🛡</div>
+    <h1>SLEEK</h1>
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <div class="input">✉️
+      <input type="email" id="email">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <div class="input">🔒
+      <input type="password" id="password">
+      <span class="eye" onclick="toggle()">👁️</span>
+    </div>
+  </div>
+
+  <div class="forgot" onclick="openReset()">Forgot password?</div>
+
+  <button class="btn" onclick="auth()">Sign In </button>
+  <div class="loader" id="loader"></div>
+</div>
+
+<!-- RESET -->
+<div class="card hidden" id="reset">
+  <div class="logo">
+    <div class="logo-icon">🔑</div>
+    <h1>Reset</h1>
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <div class="input">✉️
+      <input type="email" id="resetEmail">
+    </div>
+  </div>
+
+  <button class="btn" onclick="resetPass()">Send Reset</button>
+</div>
+
+<!-- WELCOME -->
+<div class="card hidden" id="welcome">
+  <div class="logo welcome-logo">
+    <div class="logo-icon">🛡</div>
+    <h1>SLEEK</h1>
+  </div>
+</div>
+
+<script>
+function toggle(){
+  password.type = password.type === "password" ? "text" : "password";
+}
+
+function openReset(){
+  login.classList.add("hidden");
+  reset.classList.remove("hidden");
+}
+
+function resetPass(){
+  const email = resetEmail.value;
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+  alert(users[email] ? "Reset link sent (demo)" : "Email not registered");
+}
+
+function auth(){
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+  loader.style.display="block";
+
+  setTimeout(()=>{
+    let users = JSON.parse(localStorage.getItem("users")) || {};
+    if(!users[email]) users[email] = pass;
+    else if(users[email] !== pass){
+      alert("Wrong password");
+      loader.style.display="none";
+      return;
+    }
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("loggedInUser", email);
+window.location.href = "logo.html";
+
+
+  },1200);
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SLEEK</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+@keyframes particleFloat {
+  from {
+    transform: translateY(120vh) rotate(0deg);
+    opacity: 0;
+  }
+  20% { opacity: 1; }
+  to {
+    transform: translateY(-120vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Inter',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:linear-gradient(120deg,#05010d,#2b1055,#05010d);
+  background-size:300% 300%;
+  animation:bgMove 18s ease infinite;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
+  overflow:hidden;
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+/* floating particles */
+.shape{
+  position:absolute;
+  border:1px solid rgba(200,140,255,0.25);
+  animation:float 18s linear infinite;
+}
+.shape.circle{border-radius:50%;}
+
+@keyframes float{
+  from{transform:translateY(110vh) rotate(0deg);}
+  to{transform:translateY(-120vh) rotate(360deg);}
+}
+
+/* LOGO BOX */
+.logo-box{
+  text-align:center;
+  z-index:2;
+  animation:fadeIn 2s ease forwards;
+}
+
+.logo-icon{
+  width:90px;
+  height:90px;
+  margin:auto;
+  background:linear-gradient(135deg,#c77dff,#7b2cbf);
+  border-radius:22px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  box-shadow:0 0 40px rgba(199,125,255,.9);
+  animation:pulse 2s infinite alternate;
+}
+
+@keyframes pulse{
+  from{transform:scale(1);}
+  to{transform:scale(1.08);}
+}
+
+.logo-text{
+  margin-top:18px;
+  font-size:30px;
+  letter-spacing:6px;
+  color:#e0aaff;
+}
+
+.tagline{
+  margin-top:10px;
+  font-size:14px;
+  opacity:.8;
+  letter-spacing:1px;
+}
+
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<script>
+for(let i=0;i<25;i++){
+  const s=document.createElement("div");
+  s.className="shape "+(Math.random()>.5?"circle":"");
+  s.style.width=s.style.height=Math.random()*10+6+"px";
+  s.style.left=Math.random()*100+"%";
+  s.style.animationDuration=Math.random()*15+12+"s";
+  document.body.appendChild(s);
+}
+
+/* redirect to dashboard */
+setTimeout(()=>{
+  window.location.href="dashboard.html";
+},3000);
+</script>
+
+<div class="logo-box">
+  <div class="logo-icon">🛡</div>
+  <div class="logo-text">SLEEK</div>
+  <div class="tagline">Fake News & Video Detection</div>
+</div>
+<script>
+const particleCount = 35;
+
+for (let i = 0; i < particleCount; i++) {
+  const p = document.createElement("div");
+  p.style.position = "absolute";
+  p.style.width = p.style.height = Math.random() * 8 + 4 + "px";
+  p.style.border = "1px solid rgba(199,125,255,0.25)";
+  p.style.borderRadius = Math.random() > 0.5 ? "50%" : "2px";
+  p.style.left = Math.random() * 100 + "%";
+  p.style.top = Math.random() * 100 + "%";
+  p.style.animation = `particleFloat ${Math.random() * 15 + 10}s linear infinite`;
+  p.style.zIndex = "0";
+  document.body.appendChild(p);
+}
+</script>
+
+
+</body>
+</html>
