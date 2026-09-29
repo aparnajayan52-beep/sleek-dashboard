@@ -11,7 +11,7 @@
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
 
 body{
-  height:100vh;
+  min-height:100vh;
   background:linear-gradient(120deg,#05010d,#2b1055,#05010d);
   background-size:300% 300%;
   animation:bgMove 18s ease infinite;
@@ -28,7 +28,6 @@ body{
   100%{background-position:0% 50%;}
 }
 
-/* PARTICLES */
 .shape{
   position:absolute;
   border:1px solid rgba(200,140,255,0.25);
@@ -36,37 +35,28 @@ body{
 }
 .shape.circle{border-radius:50%;}
 @keyframes float{
-  0%{
-    transform:translateY(110vh) rotate(0deg);
-    opacity:0;
-  }
+  0%{transform:translateY(110vh) rotate(0deg);opacity:0;}
   20%{opacity:1;}
   80%{opacity:1;}
-  100%{
-    transform:translateY(-120vh) rotate(360deg);
-    opacity:0;
-  }
+  100%{transform:translateY(-120vh) rotate(360deg);opacity:0;}
 }
 
-
-/* CARD */
 .card{
   width:360px;
+  max-width:92vw;
   padding:35px;
   border-radius:18px;
   background:rgba(20,10,35,0.78);
   backdrop-filter:blur(25px);
   box-shadow:0 0 40px rgba(157,78,221,0.35);
   z-index:2;
-  animation:fadeIn 1.2s ease;
+  animation:fadeIn .8s ease;
 }
-
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(20px);}
   to{opacity:1;transform:translateY(0);}
 }
 
-/* LOGO */
 .logo{text-align:center;margin-bottom:25px;}
 .logo-icon{
   width:46px;height:46px;
@@ -83,8 +73,12 @@ body{
   letter-spacing:3px;
   color:#e0aaff;
 }
+.logo p{
+  margin-top:6px;
+  font-size:13px;
+  opacity:.7;
+}
 
-/* INPUTS */
 .field{margin-bottom:16px;}
 .field label{font-size:12px;opacity:.7;}
 
@@ -95,14 +89,19 @@ body{
   border-radius:14px;
   padding:13px;
   margin-top:6px;
+  border:1px solid transparent;
+  transition:border-color .2s;
 }
+.input:focus-within{border-color:rgba(199,125,255,.6);}
 
 .input input{
   background:none;border:none;outline:none;
   color:#fff;width:100%;margin-left:8px;
+  font-size:14px;
 }
 
-.eye{cursor:pointer;opacity:.7;}
+.eye{cursor:pointer;opacity:.7;user-select:none;}
+.eye:hover{opacity:1;}
 
 .forgot{
   text-align:right;
@@ -111,8 +110,8 @@ body{
   color:#c77dff;
   cursor:pointer;
 }
+.forgot:hover,.switch a:hover{text-decoration:underline;}
 
-/* BUTTON */
 .btn{
   width:100%;
   padding:14px;
@@ -121,11 +120,35 @@ body{
   background:linear-gradient(90deg,#9d4edd,#5a189a);
   color:#fff;
   font-weight:600;
+  font-size:14px;
   cursor:pointer;
   box-shadow:0 10px 30px rgba(157,78,221,0.5);
+  transition:transform .2s, box-shadow .2s;
 }
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(157,78,221,0.6);}
+.btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
 
-/* LOADER */
+.msg{
+  display:none;
+  font-size:13px;
+  line-height:1.4;
+  padding:10px 12px;
+  border-radius:12px;
+  margin-bottom:16px;
+}
+.msg.error{display:block;background:rgba(255,107,107,.15);color:#ffb3b3;border:1px solid rgba(255,107,107,.35);}
+.msg.success{display:block;background:rgba(76,201,140,.15);color:#a8f0cf;border:1px solid rgba(76,201,140,.35);}
+
+.hint{font-size:12px;opacity:.65;margin-bottom:16px;line-height:1.4;}
+
+.switch{
+  text-align:center;
+  font-size:13px;
+  margin-top:18px;
+  opacity:.9;
+}
+.switch a{color:#c77dff;cursor:pointer;font-weight:500;}
+
 .loader{
   display:none;
   width:22px;height:22px;
@@ -137,21 +160,13 @@ body{
 }
 @keyframes spin{to{transform:rotate(360deg);}}
 
-/* WELCOME LOGO ANIMATION */
-.welcome-logo{
-  animation:logoIntro 1.6s ease;
-}
-@keyframes logoIntro{
-  0%{transform:scale(0);opacity:0;}
-  60%{transform:scale(1.25);opacity:1;}
-  100%{transform:scale(1);}
-}
+.hidden{display:none !important;}
 
-/* HIDE */
-.hidden{display:none;}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;}
+}
 </style>
 </head>
-
 <body>
 
 <script>
@@ -165,95 +180,254 @@ for(let i=0;i<22;i++){
 }
 </script>
 
-<!-- LOGIN -->
 <div class="card" id="login">
   <div class="logo">
     <div class="logo-icon">🛡</div>
     <h1>SLEEK</h1>
   </div>
 
+  <div class="msg" id="loginMsg"></div>
+
   <div class="field">
-    <label>Email</label>
+    <label for="email">Email</label>
     <div class="input">✉️
-      <input type="email" id="email">
+      <input type="email" id="email" autocomplete="email">
     </div>
   </div>
 
   <div class="field">
-    <label>Password</label>
+    <label for="password">Password</label>
     <div class="input">🔒
-      <input type="password" id="password">
-      <span class="eye" onclick="toggle()">👁️</span>
+      <input type="password" id="password" autocomplete="current-password">
+      <span class="eye" onclick="togglePw('password')">👁️</span>
     </div>
   </div>
 
-  <div class="forgot" onclick="openReset()">Forgot password?</div>
+  <div class="forgot" onclick="showCard('reset')">Forgot password?</div>
 
-  <button class="btn" onclick="auth()">Sign In </button>
+  <button class="btn" id="signInBtn" onclick="signIn()">Sign In</button>
   <div class="loader" id="loader"></div>
+
+  <div class="switch">New here? <a onclick="showCard('signup')">Create account</a></div>
 </div>
 
-<!-- RESET -->
+<div class="card hidden" id="signup">
+  <div class="logo">
+    <div class="logo-icon">🛡</div>
+    <h1>SLEEK</h1>
+    <p>Create your account</p>
+  </div>
+
+  <div class="msg" id="signupMsg"></div>
+
+  <div class="field">
+    <label for="suName">Username</label>
+    <div class="input">👤
+      <input type="text" id="suName" maxlength="20" autocomplete="username">
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="suEmail">Email</label>
+    <div class="input">✉️
+      <input type="email" id="suEmail" autocomplete="email">
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="suPass">Password (6+ characters)</label>
+    <div class="input">🔒
+      <input type="password" id="suPass" autocomplete="new-password">
+      <span class="eye" onclick="togglePw('suPass')">👁️</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="suConfirm">Confirm password</label>
+    <div class="input">🔒
+      <input type="password" id="suConfirm" autocomplete="new-password">
+      <span class="eye" onclick="togglePw('suConfirm')">👁️</span>
+    </div>
+  </div>
+
+  <button class="btn" onclick="signUp()">Create account</button>
+
+  <div class="switch">Already have an account? <a onclick="showCard('login')">Sign in</a></div>
+</div>
+
 <div class="card hidden" id="reset">
   <div class="logo">
     <div class="logo-icon">🔑</div>
     <h1>Reset</h1>
   </div>
 
-  <div class="field">
-    <label>Email</label>
-    <div class="input">✉️
-      <input type="email" id="resetEmail">
+  <div class="msg" id="resetMsg"></div>
+
+  <div class="step" id="resetStep1">
+    <p class="hint">Enter the email you signed up with.</p>
+    <div class="field">
+      <label for="resetEmail">Email</label>
+      <div class="input">✉️
+        <input type="email" id="resetEmail" autocomplete="email">
+      </div>
     </div>
+    <button class="btn" onclick="verifyResetEmail()">Continue</button>
   </div>
 
-  <button class="btn" onclick="resetPass()">Send Reset</button>
-</div>
-
-<!-- WELCOME -->
-<div class="card hidden" id="welcome">
-  <div class="logo welcome-logo">
-    <div class="logo-icon">🛡</div>
-    <h1>SLEEK</h1>
+  <div class="step hidden" id="resetStep2">
+    <p class="hint">Choose a new password for <b id="resetFor"></b>.</p>
+    <div class="field">
+      <label for="newPass">New password (6+ characters)</label>
+      <div class="input">🔒
+        <input type="password" id="newPass" autocomplete="new-password">
+        <span class="eye" onclick="togglePw('newPass')">👁️</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="newConfirm">Confirm new password</label>
+      <div class="input">🔒
+        <input type="password" id="newConfirm" autocomplete="new-password">
+        <span class="eye" onclick="togglePw('newConfirm')">👁️</span>
+      </div>
+    </div>
+    <button class="btn" onclick="saveNewPassword()">Save new password</button>
   </div>
+
+  <div class="switch"><a onclick="showCard('login')">Back to sign in</a></div>
 </div>
 
 <script>
-function toggle(){
-  password.type = password.type === "password" ? "text" : "password";
+const $ = id => document.getElementById(id);
+const CARDS = ['login','signup','reset'];
+let resetKey = null;
+
+function getUsers(){
+  try { return JSON.parse(localStorage.getItem('users')) || {}; }
+  catch(e){ return {}; }
+}
+function saveUsers(u){ localStorage.setItem('users', JSON.stringify(u)); }
+
+function findUser(email){
+  const users = getUsers();
+  const key = Object.keys(users).find(k => k.toLowerCase() === email.toLowerCase());
+  return { users, key };
 }
 
-function openReset(){
-  login.classList.add("hidden");
-  reset.classList.remove("hidden");
+function setMsg(id, text, type){
+  const m = $(id);
+  m.textContent = text;
+  m.className = 'msg ' + (type || 'error');
 }
-
-function resetPass(){
-  const email = resetEmail.value;
-  let users = JSON.parse(localStorage.getItem("users")) || {};
-  alert(users[email] ? "Reset link sent (demo)" : "Email not registered");
+function clearMsgs(){
+  document.querySelectorAll('.msg').forEach(m => { m.textContent=''; m.className='msg'; });
 }
+function showCard(name){
+  CARDS.forEach(c => $(c).classList.toggle('hidden', c !== name));
+  clearMsgs();
+  if(name === 'reset'){
+    resetKey = null;
+    $('resetStep1').classList.remove('hidden');
+    $('resetStep2').classList.add('hidden');
+    ['resetEmail','newPass','newConfirm'].forEach(i => $(i).value = '');
+  }
+}
+function togglePw(id){
+  const i = $(id);
+  i.type = i.type === 'password' ? 'text' : 'password';
+}
+const validEmail = e => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
 
-function auth(){
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-  loader.style.display="block";
+function signIn(){
+  const email = $('email').value.trim();
+  const pass  = $('password').value;
 
-  setTimeout(()=>{
-    let users = JSON.parse(localStorage.getItem("users")) || {};
-    if(!users[email]) users[email] = pass;
-    else if(users[email] !== pass){
-      alert("Wrong password");
-      loader.style.display="none";
-      return;
+  if(!email || !pass){ return setMsg('loginMsg', 'Enter your email and password.'); }
+
+  const { users, key } = findUser(email);
+  if(!key){
+    return setMsg('loginMsg', 'No account found for this email. Use "Create account" below.');
+  }
+  if(users[key] !== pass){
+    return setMsg('loginMsg', 'Wrong password. Try again or use "Forgot password?".');
+  }
+
+  clearMsgs();
+  $('signInBtn').disabled = true;
+  $('loader').style.display = 'block';
+
+  setTimeout(() => {
+    localStorage.setItem('loggedInUser', key);
+    if(!localStorage.getItem('username')){
+      localStorage.setItem('username', key.split('@')[0]);
     }
-    localStorage.setItem("users", JSON.stringify(users));
-    localStorage.setItem("loggedInUser", email);
-window.location.href = "logo.html";
-
-
-  },1200);
+    window.location.href = 'logo.html';
+  }, 800);
 }
+
+function signUp(){
+  const name    = $('suName').value.trim();
+  const email   = $('suEmail').value.trim();
+  const pass    = $('suPass').value;
+  const confirm = $('suConfirm').value;
+
+  if(!name)               return setMsg('signupMsg', 'Choose a username.');
+  if(!validEmail(email))  return setMsg('signupMsg', 'Enter a valid email address.');
+  if(pass.length < 6)     return setMsg('signupMsg', 'Password must be at least 6 characters.');
+  if(pass !== confirm)    return setMsg('signupMsg', 'Passwords do not match.');
+
+  const { users, key } = findUser(email);
+  if(key) return setMsg('signupMsg', 'An account with this email already exists. Sign in instead.');
+
+  users[email] = pass;
+  saveUsers(users);
+  localStorage.setItem('username', name);
+
+  ['suName','suEmail','suPass','suConfirm'].forEach(i => $(i).value = '');
+  showCard('login');
+  $('email').value = email;
+  setMsg('loginMsg', 'Account created. Sign in to continue.', 'success');
+}
+
+function verifyResetEmail(){
+  const email = $('resetEmail').value.trim();
+  if(!validEmail(email)) return setMsg('resetMsg', 'Enter a valid email address.');
+
+  const { key } = findUser(email);
+  if(!key) return setMsg('resetMsg', 'No account found for this email. Create an account instead.');
+
+  resetKey = key;
+  clearMsgs();
+  $('resetFor').textContent = key;
+  $('resetStep1').classList.add('hidden');
+  $('resetStep2').classList.remove('hidden');
+  $('newPass').focus();
+}
+
+function saveNewPassword(){
+  const pass    = $('newPass').value;
+  const confirm = $('newConfirm').value;
+
+  if(!resetKey)        return setMsg('resetMsg', 'Start again: enter your email first.');
+  if(pass.length < 6)  return setMsg('resetMsg', 'Password must be at least 6 characters.');
+  if(pass !== confirm) return setMsg('resetMsg', 'Passwords do not match.');
+
+  const users = getUsers();
+  users[resetKey] = pass;
+  saveUsers(users);
+
+  const email = resetKey;
+  showCard('login');
+  $('email').value = email;
+  $('password').value = '';
+  setMsg('loginMsg', 'Password updated. Sign in with your new password.', 'success');
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key !== 'Enter') return;
+  const card = CARDS.map($).find(c => !c.classList.contains('hidden'));
+  const btn = card.querySelector('.step:not(.hidden) .btn') || card.querySelector('.btn');
+  if(btn && !btn.disabled) btn.click();
+});
 </script>
 
 </body>
